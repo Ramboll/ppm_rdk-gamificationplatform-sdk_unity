@@ -1,0 +1,31 @@
+﻿<Window x:Class="PatternModifierUI.Views.UpdateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PatternModifierUI.Views"
+        mc:Ignorable="d"
+        Title="RebarAnnotationTool" Height="250"  Width="380" ResizeMode="NoResize"  WindowStartupLocation="CenterScreen" >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PatternModifierUI;component/ResourceApp.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <Grid   Grid.Row="0" Grid.ColumnSpan="1" Width="330" Name="currentView">
+            <ContentControl Content="{Binding CurrentUpdateView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid  Grid.Row="1" Grid.ColumnSpan="1" Width="330"  Name="bottomView"  >
+            <ContentControl Content="{Binding UpdateBottomView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  />
+        </Grid>
+        <Grid>
+            <ContentControl Content="{Binding CurrentProgressView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </Grid>
+</Window>

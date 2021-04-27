@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="PatternModifierUI.Views.UpdateBottomView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PatternModifierUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="330">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PatternModifierUI;component/ResourceApp.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
+        <Button  Grid.Row="1" Style="{DynamicResource RoundButton}" FontSize="20" Foreground="White" Background="#009DF0"  Command="{Binding OkCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.ColumnSpan="1" Margin="11,4,216,0" VerticalAlignment="Center"  Height="33"   >Ok</Button>
+        <Button Grid.Row="1" Style="{DynamicResource RoundButton}" FontSize="20" Foreground="White" Background="#009DF0"  Command="{Binding CancelCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="146,9,81,4"  VerticalAlignment="Center"  Height="32"    >Cancel</Button>
+    </Grid>
+</UserControl>

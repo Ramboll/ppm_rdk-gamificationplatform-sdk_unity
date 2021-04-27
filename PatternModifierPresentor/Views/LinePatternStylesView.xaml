@@ -1,0 +1,227 @@
+﻿<UserControl x:Class="PatternModifierUI.Views.LinePatternStylesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:my="clr-namespace:PatternModifierUI.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:wpfx="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+             mc:Ignorable="d" Height="650" Width="780">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PatternModifierUI;component/ResourceApp.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border  Background="White"  Grid.Row="1" Margin="5" Grid.ColumnSpan="6" BorderThickness="2"  CornerRadius="3,3,3,3" BorderBrush="#009DF0"/>
+        <Border Background="White"  Grid.Row="2"  Margin="5" Grid.ColumnSpan="6" BorderThickness="2"  CornerRadius="3,3,3,3" BorderBrush="#009DF0"/>
+        <Border  Background="White"  Grid.Row="3" Margin="5"  Grid.ColumnSpan="6" BorderThickness="2"  CornerRadius="3,3,3,3" BorderBrush="#009DF0"/>
+        <Border Background="White"  Grid.Row="4" Margin="5" Grid.ColumnSpan="6" BorderThickness="2"  CornerRadius="3,3,3,3" BorderBrush="#009DF0"/>
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <my:MyRowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+        </Grid>
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <my:MyRowDefinition Height="70" IsHidden="{Binding IsBottomRebarGridCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Expander Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Foreground="#009DF0" Name="BottomExpander" FontSize="17" FontWeight="Bold"  ExpandDirection="Up" IsExpanded="{Binding IsBottomRebarBtnExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="Graphic Overrides for Bottom/Far Rebars"   
+          HorizontalAlignment="Left" VerticalAlignment="Top">
+            </Expander>
+            <Grid x:Name="BottomRebarName" Grid.Row="2" Grid.Column="0" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Pattern:"  VerticalAlignment="Center"  FontSize="17"  HorizontalAlignment="Center" Margin="10,18,44,19" Width="70"  ></Label>
+            </Grid>
+            <Grid   Grid.Row="1" Grid.Column="1" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15"  SelectedItem="{Binding SelectedBottomLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  DisplayMemberPath="Name"  ItemsSource="{Binding LstBottomProjectionLines,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="30"  VerticalAlignment="Center" Margin="-40,18,21,18"  />
+            </Grid>
+            <Grid  Grid.Row="2" Grid.Column="2" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Color:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="12,18,54,18" Width="57"></Label>
+            </Grid>
+            <Grid Grid.Row="2" Grid.Column="3" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button Height="30"   Command="{Binding BottomColorCommandButton,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="-48,18,28,18">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Height="14" Width="25" Stroke="Black">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding SelectedBottomColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock   TextAlignment="Left"  FontSize="15"  Width="120"><Run Text="{Binding SelectedBottomColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding SelectedBottomColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
+                    </StackPanel>
+                </Button>
+
+
+                <!--<wpfx:ColorPicker FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" SelectedColor="{Binding SelectedBottomColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Name="BottomColorPicker" Height="30" Width="160" DisplayColorAndName="True" SelectedColorChanged="BottomColor_SelectedColorChanged" Margin="-22,15,-6,15" />-->
+            </Grid>
+            <Grid Grid.Row="2" Grid.Column="4" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Weight:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="1,18,52,18" Width="70"></Label>
+            </Grid>
+            <Grid  Grid.Row="2" Grid.Column="5" Visibility="{Binding BottomRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15"  DisplayMemberPath="WeightNumberInString" SelectedItem="{Binding SelectedBottomWeight,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding LstLineWeights,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="30" Width="148" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="-48,18,0,18"></ComboBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <my:MyRowDefinition Height="70" IsHidden="{Binding IsTopRebarGridCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Expander Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Foreground="#009DF0" Name="TopExpander" FontSize="17" FontWeight="Bold"  ExpandDirection="Up" IsExpanded="{Binding IsTopRebarBtnExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="Graphic Overrides for Top/Near Rebars"   
+          HorizontalAlignment="Left" VerticalAlignment="Top">
+            </Expander>
+            <Grid  Grid.Row="1" Grid.Column="0" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Pattern:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="10,18,44,19" Width="70" ></Label>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="1" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15"  SelectedItem="{Binding SelectedTopLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  DisplayMemberPath="Name"  ItemsSource="{Binding LstProjectionLines,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Height="30"   VerticalAlignment="Center" Margin="-40,18,21,18"   ></ComboBox>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="2" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Color:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="12,18,54,18" Width="57"></Label>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="3" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button  Height="30"  Margin="-48,18,28,18" Command="{Binding TopColorCommandButton,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Height="14" Width="25" Stroke="Black">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding SelectedTopColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock   TextAlignment="Left"  FontSize="15"  Width="120"><Run Text="{Binding SelectedTopColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding SelectedTopColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="4" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Weight:"  VerticalAlignment="Center"  FontSize="17" HorizontalAlignment="Center" Margin="1,18,52,18" Width="70"></Label>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="5" Visibility="{Binding TopRebarVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15" DisplayMemberPath="WeightNumberInString" SelectedItem="{Binding SelectedTopWeight,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding LstLineWeights,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="30" Width="148" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="-48,18,0,18"></ComboBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="3" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <my:MyRowDefinition Height="70" IsHidden="{Binding IsRebarSymCollapse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Expander Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Foreground="#009DF0" Name="RebarSymbolExpander" FontSize="17" FontWeight="Bold"  ExpandDirection="Up" IsExpanded="{Binding IsRebarSymbolExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="Graphic Overrides for Rebar Symbols"   
+          HorizontalAlignment="Left" VerticalAlignment="Top">
+            </Expander>
+            <Grid  Grid.Row="1" Grid.Column="0" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Pattern:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="10,18,44,19" Width="70"></Label>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="1" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15"   SelectedItem="{Binding SelectedRebarLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  DisplayMemberPath="Name"  ItemsSource="{Binding LstProjectionLines,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="30"  VerticalAlignment="Center" Margin="-40,18,21,18"  ></ComboBox>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="2" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Color:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Center" Margin="12,18,54,18" Width="57"></Label>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="3" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button  Height="30" Margin="-48,18,28,18" Command="{Binding RebarColorCommandButton,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Height="14" Width="25" Stroke="Black">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding SelectedRebarColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock   TextAlignment="Left"  FontSize="15"  Width="120"><Run Text="{Binding SelectedRebarColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding SelectedRebarColorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="4" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Weight:"  VerticalAlignment="Center"  FontSize="17" HorizontalAlignment="Center" Margin="1,18,52,18" Width="70"></Label>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="5" Visibility="{Binding RebarSymbolVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox FontSize="15" DisplayMemberPath="WeightNumberInString" SelectedItem="{Binding SelectedRebarWeight,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding LstLineWeights,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="30" Width="148" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="-48,18,0,18"></ComboBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="4" Margin="5">
+            <Grid.RowDefinitions>
+                <my:MyRowDefinition Height="40" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <my:MyRowDefinition Height="40" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <my:MyRowDefinition Height="40" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <my:MyRowDefinition Height="40" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <my:MyRowDefinition Height="40" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <my:MyRowDefinition Height="10" IsHidden="{Binding IsFamBrowseCollapsed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Expander Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Foreground="#009DF0" Name="FamilyBrowserExpander" FontSize="17" FontWeight="Bold"  ExpandDirection="Up" IsExpanded="{Binding FamilyBrowseSymbolExpand, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="Family Browser For Rebar Symbol"   
+          HorizontalAlignment="Left" VerticalAlignment="Top">
+            </Expander>
+            <Grid  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Rebar End:"  VerticalAlignment="Center"   FontSize="17" HorizontalAlignment="Right" Margin="0,0,58,7"/>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <TextBox  BorderBrush="{Binding RebarEndBorderColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Text="{Binding RebarEndBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="25" Margin="-43,5,10,5" FontSize="15" ToolTip="{Binding RebarEndBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid  Grid.Row="1" Grid.Column="5" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button Command="{Binding RebarEndBrowseCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource RoundButton}" FontSize="15" Foreground="White" Background="#009DF0" Content="Browse" Height="32" Width="85" Margin="12,4,31,4" ></Button>
+            </Grid>
+            <Grid  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Rebar In-Plane Bend:"  VerticalAlignment="Center"  FontSize="17" HorizontalAlignment="Right" Margin="0,0,58,7"></Label>
+            </Grid>
+            <Grid  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <TextBox  BorderBrush="{Binding RebarInPlaneBorderColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Text="{Binding RebarInPlaneBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Height="25" Margin="-43,5,10,5"  FontSize="15" ToolTip="{Binding RebarInPlaneBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid  Grid.Row="2" Grid.Column="5" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button Command="{Binding RebarInPlaneBrowseCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Style="{DynamicResource RoundButton}"  FontSize="15" Foreground="White" Background="#009DF0" Content="Browse" Height="32" Width="85" Margin="12,4,31,4"></Button>
+            </Grid>
+            <Grid   Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Rebar Out-Plane Bend:"  VerticalAlignment="Center"  FontSize="17" HorizontalAlignment="Right" Margin="0,0,58,7"></Label>
+            </Grid>
+            <Grid  Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <TextBox  BorderBrush="{Binding RebarOutPlaneBorderColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding RebarOutPlaneBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="25" Margin="-43,5,10,5" FontSize="15" ToolTip="{Binding RebarOutPlaneBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Grid.Row="3" Grid.Column="5" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button Command="{Binding RebarOutPlaneBrowseCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource RoundButton}"  FontSize="15" Foreground="White" Background="#009DF0" Content="Browse" Height="32" Width="85" Margin="12,4,31,4"></Button>
+            </Grid>
+            <Grid  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Rebar Inclined Bend:"  VerticalAlignment="Center"  FontSize="17" HorizontalAlignment="Right" Margin="0,0,58,7"></Label>
+            </Grid>
+            <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <TextBox  BorderBrush="{Binding RebarInclinedBorderColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding RebarInclinedBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="25" Margin="-43,5,10,5" FontSize="15" ToolTip="{Binding RebarInclinedBrowsePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid  Grid.Row="4" Grid.Column="5" Visibility="{Binding FamBrowserSymVisiblity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button Command="{Binding RebarInclinedBrowseCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource RoundButton}"  FontSize="15" Foreground="White" Background="#009DF0" Content="Browse" Height="32" Width="85" Margin="12,4,31,4"></Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

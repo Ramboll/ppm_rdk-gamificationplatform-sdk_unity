@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="PatternModifierUI.Views.UpdateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PatternModifierUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="130" d:DesignWidth="330">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PatternModifierUI;component/ResourceApp.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="90"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" FontSize="20" VerticalAlignment="Center"  Background="LightGray">Update</Label>
+        <RadioButton IsChecked="{Binding IsActiveViewChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"  FontSize="17" HorizontalAlignment="Left"   VerticalAlignment="Center" Margin="0,49,0,19" >Active View</RadioButton>
+        <RadioButton IsChecked="{Binding IsAllViewChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"  FontSize="17" HorizontalAlignment="Left"   VerticalAlignment="Center" Margin="0,13,0,55" >All View</RadioButton>
+    </Grid>
+</UserControl>
