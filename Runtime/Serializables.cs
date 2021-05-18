@@ -211,6 +211,41 @@ namespace GamificationBackend
         }
     }
 
+    [Serializable]
+    public class Notice : IBaseSerializable
+    {
+        public int id;
+        public int campaign;
+        public string title;
+        public string content;
+        public string date;
+        public string originator_name;
+        
+        public bool check()
+        {
+            return id != 0;
+        }
+
+        public IBaseSerializable Create(JSONNode data)
+        {
+            var result =  new Notice
+            {
+                id = data["id"],
+                campaign = data["campaign"],
+                title = data["title"],
+                content = data["content"],
+                date = data["date"],
+                originator_name = data["originator_name"],
+            };
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{id}::{originator_name}::{date}";
+        }
+    }
+
     /// <summary>
     /// Data to send to API for setting values
     /// </summary>

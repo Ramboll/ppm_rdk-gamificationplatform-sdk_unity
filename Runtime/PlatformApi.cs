@@ -23,6 +23,7 @@ namespace GamificationBackend
             private readonly string _filesListURL;
             private readonly string _fileContentURL;
             private readonly string _udfValueUrl;
+            private readonly string _noticesUrl;
             
             private string _personalToken;
             
@@ -36,6 +37,7 @@ namespace GamificationBackend
                 _filesListURL = $"{host}/gamification/api/game/<game_id>/assets/<campaign_id>/";
                 _fileContentURL = $"{host}/gamification/api/game-asset/<pk>/content/";
                 _udfValueUrl = $"{host}/gamification/api/game/<game_id>/custom-fields/<campaign_id>/";
+                _noticesUrl = $"{host}/gamification/api/game-notice/";
             }
             
             #region API calls
@@ -241,6 +243,14 @@ namespace GamificationBackend
                     }).ToList()
                 };
                 callback(response);
+            }
+
+            public IEnumerator GetNotices(PlaySession session, Action<PlatformResponseMany<Notice>> callback)
+            {
+                var url = _noticesUrl;
+                yield return GetJsonData<Notice>(url, true);
+                var noticesResponse = (PlatformResponseMany<Notice>) responseCache;
+                callback(noticesResponse);
             }
             
             #endregion
