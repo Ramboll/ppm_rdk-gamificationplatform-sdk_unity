@@ -1,6 +1,6 @@
 {
     "name": "com.ramrisk.gamification-platform-sdk",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "displayName": "Gamification Platform SDK",
     "description": "Scripts to integrate with Ramboll's Gamification Platform",
     "unity": "2019.4",

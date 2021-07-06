@@ -277,7 +277,7 @@ namespace GamificationBackend
 
                 var attachmentUrl = _observationContentUrl
                     .Replace("<observation_id>", observationResponse.content.id.ToString());
-                yield return PostFileData(attachmentUrl, "image", "Image.jpeg", imageBytes, error =>
+                yield return PostFileData(attachmentUrl, "attachment", "Observation.jpeg", imageBytes, error =>
                 {
                     if (!string.IsNullOrEmpty(error))
                     {
