@@ -152,7 +152,17 @@ namespace GamificationBackend
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.GetNotices(session, callback);
+            yield return api.GetNotices(callback);
+        }
+        
+        public IEnumerator CreateObservation(string title, string note, int obsType, Action<PlatformResponse<Observation>> callback)
+        {
+            if (session == null)
+            {
+                Debug.LogWarning("Play session has not been built. Ignoring request");
+                yield break;
+            }
+            yield return api.CreateObservation(session, title, note, obsType, callback);
         }
         
         public IEnumerator GetFileContent(int assetId, Action<AssetData> callback)
@@ -162,7 +172,7 @@ namespace GamificationBackend
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.GetFileContent(session, assetId, callback);
+            yield return api.GetFileContent(assetId, callback);
         }
 
         public IEnumerator SetCustomField<T>(string label, T value, UdfType type, Action<PlatformResponseMany<UdfValue>> callback)

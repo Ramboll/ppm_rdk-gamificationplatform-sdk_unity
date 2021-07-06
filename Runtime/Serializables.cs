@@ -246,6 +246,68 @@ namespace GamificationBackend
         }
     }
 
+    [Serializable]
+    public class PayloadObservation : IBaseSerializable
+    {
+        public int mobile_app;
+        public int scope;
+        public int obs_type;
+        public string title;
+        public string note;
+        public int status;
+        
+        public bool check()
+        {
+            return true;
+        }
+
+        public IBaseSerializable Create(JSONNode data)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class Observation : IBaseSerializable
+    {
+        public int id;
+        public int mobile_app;
+        public int scope;
+        public int reporter;
+        public string date;
+        public int obs_type;
+        public string title;
+        public string note;
+        public int status;
+        
+        public bool check()
+        {
+            return id != 0;
+        }
+
+        public IBaseSerializable Create(JSONNode data)
+        {
+            var result =  new Observation
+            {
+                id = data["id"],
+                mobile_app = data["mobile_app"],
+                scope = data["scope"],
+                reporter = data["reporter"],
+                date = data["date"],
+                title = data["title"],
+                status = data["stauts"],
+                note = data["note"],
+                obs_type = data["obs_type"],
+            };
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{id}::{title}::{date}";
+        }
+    }
+
     /// <summary>
     /// Data to send to API for setting values
     /// </summary>

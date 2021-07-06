@@ -24,20 +24,25 @@ namespace GamificationBackend
             private readonly string _fileContentURL;
             private readonly string _udfValueUrl;
             private readonly string _noticesUrl;
+            private readonly string _observationsUrl;
+            private readonly string _observationContentUrl;
             
             private string _personalToken;
             
             public PlatformApi(string host, string gameToken)
             {
+                var prefix = $"{host}/gamification/api";
                 _gameToken = gameToken;
-                _authURL = $"{host}/gamification/api/auth/";
-                _identifyURL = $"{host}/gamification/api/game/identify/";
-                _activityURL = $"{host}/gamification/api/game/<game_id>/activity/<campaign_id>/";
-                _registerURL = $"{host}/gamification/api/register/";
-                _filesListURL = $"{host}/gamification/api/game/<game_id>/assets/<campaign_id>/";
-                _fileContentURL = $"{host}/gamification/api/game-asset/<pk>/content/";
-                _udfValueUrl = $"{host}/gamification/api/game/<game_id>/custom-fields/<campaign_id>/";
-                _noticesUrl = $"{host}/gamification/api/game-notice/";
+                _authURL = $"{prefix}/auth/";
+                _identifyURL = $"{prefix}/game/identify/";
+                _activityURL = $"{prefix}/game/<game_id>/activity/<campaign_id>/";
+                _registerURL = $"{prefix}/register/";
+                _filesListURL = $"{prefix}/game/<game_id>/assets/<campaign_id>/";
+                _fileContentURL = $"{prefix}/game-asset/<pk>/content/";
+                _udfValueUrl = $"{prefix}/game/<game_id>/custom-fields/<campaign_id>/";
+                _noticesUrl = $"{prefix}/game-notice/";
+                _observationsUrl = $"{prefix}/safety-observation/";
+                _observationContentUrl = $"{prefix}/safety-observation/<observation_id>/attachment";
             }
             
             #region API calls
@@ -205,7 +210,7 @@ namespace GamificationBackend
                 callback(filesResponse);
             }
 
-            public IEnumerator GetFileContent(PlaySession session, int assetId, Action<AssetData> callback)
+            public IEnumerator GetFileContent(int assetId, Action<AssetData> callback)
             {
                 var url = _fileContentURL
                     .Replace("<pk>", assetId.ToString());
@@ -214,7 +219,8 @@ namespace GamificationBackend
                 callback((AssetData)responseCache);
             }
 
-            public IEnumerator SetUdfFieldValue<T>(PlaySession session, string name, T value, int udfType, Action<PlatformResponseMany<UdfValue>> callback)
+            public IEnumerator SetUdfFieldValue<T>(PlaySession session, string name, T value, int udfType,
+                Action<PlatformResponseMany<UdfValue>> callback)
             {
                 var url = _udfValueUrl
                     .Replace("<game_id>", session.gameID.ToString())
@@ -245,12 +251,40 @@ namespace GamificationBackend
                 callback(response);
             }
 
-            public IEnumerator GetNotices(PlaySession session, Action<PlatformResponseMany<Notice>> callback)
+            public IEnumerator GetNotices(Action<PlatformResponseMany<Notice>> callback)
             {
                 var url = _noticesUrl;
                 yield return GetJsonData<Notice>(url, true);
                 var noticesResponse = (PlatformResponseMany<Notice>) responseCache;
                 callback(noticesResponse);
+            }
+
+            public IEnumerator CreateObservation(PlaySession session, string title, string note, int obsType,
+                Action<PlatformResponse<Observation>> callback)
+            {
+                var url = _observationsUrl;
+                PayloadObservation payload = new PayloadObservation
+                {
+                    mobile_app = session.gameID,
+                    note = note,
+                    obs_type = obsType,
+                    scope = session.campaignID,
+                    status = 10,  // status = SUBMITTED
+                    title = title
+                };
+                yield return PostJsonData<PayloadObservation, Observation>(url, payload);
+                var observationResponse = (PlatformResponse<Observation>) responseCache;
+                callback(observationResponse);
+            }
+
+            public IEnumerator AttachFileToObservation(PlaySession session, Observation observation, byte[] attachment,
+                Action<PlatformResponse<Observation>> callback)
+            {
+                var url = _observationContentUrl;
+                // yield return PostFileData<PayloadObservation, Observation>(url, payload);
+                // var observationResponse = (PlatformResponse<Observation>) responseCache;
+                // callback(observationResponse);
+                yield break;
             }
             
             #endregion
@@ -275,7 +309,6 @@ namespace GamificationBackend
             where T1: IBaseSerializable
             where T2 : IBaseSerializable, new()
             {
-                Debug.Log("PostJsonData: Posting new request: " + url);
                 using (UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(payload)))
                 {
                     webRequest.method = "POST";
@@ -286,23 +319,39 @@ namespace GamificationBackend
                         webRequest.SetRequestHeader("Authorization", "Token " + _personalToken);
                     }
                     
-                    Debug.Log("PostJsonData: Yielding until request is done");
                     yield return webRequest.SendWebRequest();
-                    Debug.Log("PostJsonData: Response received");
 
                     if (webRequest.isNetworkError)
                     {
-                        Debug.Log("WebRequest failed: " + webRequest.error);
                         responseCache = new PlatformResponse<T2>
                         {
                             status = RequestStatus.ERROR,
                             error = "Could not connect to platform API",
                             content = default
                         };
+                    } else if (!string.IsNullOrEmpty(webRequest.error))
+                    {
+                        if (expectMany)
+                        {
+                            responseCache = new PlatformResponseMany<T2>
+                            {
+                                status = RequestStatus.ERROR,
+                                error = "404 NOT FOUND: " + url,
+                                content = default
+                            };
+                        }
+                        else
+                        {
+                            responseCache = new PlatformResponse<T2>
+                            {
+                                status = RequestStatus.ERROR,
+                                error = "404 NOT FOUND: " + url,
+                                content = default
+                            };
+                        }
                     }
                     else
                     {
-                        Debug.Log("PostJsonData: Request successful. Calling callback");
                         try
                         {
                             if (expectMany)
@@ -332,8 +381,9 @@ namespace GamificationBackend
                                 };
                             }
                         }
-                        catch (DeserializeException e)
+                        catch (DeserializeException)
                         {
+                            Debug.LogError("Response was: " + webRequest.downloadHandler.text);
                             responseCache = new PlatformResponse<T2>
                             {
                                 status = RequestStatus.ERROR,
@@ -341,7 +391,7 @@ namespace GamificationBackend
                                 content = default
                             };
                         }
-                        catch (ArgumentException e)
+                        catch (ArgumentException)
                         {
                             responseCache = new PlatformResponse<T2>
                             {
@@ -357,7 +407,6 @@ namespace GamificationBackend
             private IEnumerator GetJsonData<T2>(string url, bool expectMany = false)
             where T2 : IBaseSerializable, new()
             {
-                Debug.Log("PostJsonData: Posting new request: " + url);
                 using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
                 {
                     webRequest.SetRequestHeader("Accept", "application/json");
@@ -367,9 +416,7 @@ namespace GamificationBackend
                         webRequest.SetRequestHeader("Authorization", "Token " + _personalToken);
                     }
                     
-                    Debug.Log("PostJsonData: Yielding until request is done");
                     yield return webRequest.SendWebRequest();
-                    Debug.Log("PostJsonData: Response received");
 
                     if (webRequest.isNetworkError)
                     {
@@ -379,6 +426,26 @@ namespace GamificationBackend
                             error = "Could not connect to platform API",
                             content = default
                         };
+                    } else if (!string.IsNullOrEmpty(webRequest.error))
+                    {
+                        if (expectMany)
+                        {
+                            responseCache = new PlatformResponseMany<T2>
+                            {
+                                status = RequestStatus.ERROR,
+                                error = "404 NOT FOUND: " + url,
+                                content = default
+                            };
+                        }
+                        else
+                        {
+                            responseCache = new PlatformResponse<T2>
+                            {
+                                status = RequestStatus.ERROR,
+                                error = "404 NOT FOUND: " + url,
+                                content = default
+                            };
+                        }
                     }
                     else
                     {
@@ -411,9 +478,9 @@ namespace GamificationBackend
                                 };
                             }
                         }
-                        catch (DeserializeException e)
+                        catch (DeserializeException)
                         {
-                            Debug.LogWarning("PostJsonData: Got back unexpected format");
+                            Debug.LogError("Response was: " + webRequest.downloadHandler.text);
                             responseCache = new PlatformResponse<T2>
                             {
                                 status = RequestStatus.ERROR,
@@ -421,9 +488,8 @@ namespace GamificationBackend
                                 content = default
                             };
                         }
-                        catch (ArgumentException e)
+                        catch (ArgumentException)
                         {
-                            Debug.LogWarning("PostJsonData: Got response, but it wasn't JSON");
                             responseCache = new PlatformResponse<T2>
                             {
                                 status = RequestStatus.ERROR,
