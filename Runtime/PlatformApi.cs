@@ -42,7 +42,7 @@ namespace GamificationBackend
                 _udfValueUrl = $"{prefix}/game/<game_id>/custom-fields/<campaign_id>/";
                 _noticesUrl = $"{prefix}/game-notice/";
                 _observationsUrl = $"{prefix}/safety-observation/";
-                _observationContentUrl = $"{prefix}/safety-observation/<observation_id>/attachment";
+                _observationContentUrl = $"{prefix}/safety-observation/<observation_id>/attachment/";
             }
             
             #region API calls
@@ -210,13 +210,13 @@ namespace GamificationBackend
                 callback(filesResponse);
             }
 
-            public IEnumerator GetFileContent(int assetId, Action<AssetData> callback)
+            public IEnumerator GetFileContent(int assetId, Action<FileResponse> callback)
             {
                 var url = _fileContentURL
                     .Replace("<pk>", assetId.ToString());
 
                 yield return GetFileData(url);
-                callback((AssetData)responseCache);
+                callback((FileResponse)responseCache);
             }
 
             public IEnumerator SetUdfFieldValue<T>(PlaySession session, string name, T value, int udfType,
@@ -260,7 +260,7 @@ namespace GamificationBackend
             }
 
             public IEnumerator CreateObservation(PlaySession session, string title, string note, int obsType,
-                Action<PlatformResponse<Observation>> callback)
+                byte[] imageBytes, Action<PlatformResponse<Observation>> callback)
             {
                 var url = _observationsUrl;
                 PayloadObservation payload = new PayloadObservation
@@ -274,6 +274,18 @@ namespace GamificationBackend
                 };
                 yield return PostJsonData<PayloadObservation, Observation>(url, payload);
                 var observationResponse = (PlatformResponse<Observation>) responseCache;
+
+                var attachmentUrl = _observationContentUrl
+                    .Replace("<observation_id>", observationResponse.content.id.ToString());
+                yield return PostFileData(attachmentUrl, "image", "Image.jpeg", imageBytes, error =>
+                {
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Debug.LogError(error);
+                        observationResponse.error = "Attachment failed: " + error;
+                    }
+                });
+                    
                 callback(observationResponse);
             }
 
@@ -516,14 +528,36 @@ namespace GamificationBackend
 
                 yield return www.SendWebRequest();
 
-                responseCache = new AssetData
+                responseCache = new FileResponse
                 {
                     byteData = www.downloadHandler.data,
                     mimeType = www.GetResponseHeader("Content-Type")
                 };
             }
+
+            /// <summary>
+            /// Posts file data to URL
+            /// </summary>
+            /// <param name="url">The URL to get the data from</param>
+            /// <returns></returns>
+            private IEnumerator PostFileData(string url, string fieldName, string fileName, byte[] fileContent,
+                Action<string> callback)
+            {
+                var wwwForm = new WWWForm();
+                wwwForm.AddBinaryData(fieldName, fileContent, fileName);
+                var www = UnityWebRequest.Post(url, wwwForm);
+                if (!string.IsNullOrEmpty(_personalToken))
+                {
+                    www.SetRequestHeader("Authorization", "Token " + _personalToken);
+                }
+
+                yield return www.SendWebRequest();
+
+                callback(www.error);
+            }
             
-            #endregion
+        
+        #endregion
         }
 
         public enum RequestStatus { ERROR, SUCCESS }
@@ -546,7 +580,7 @@ namespace GamificationBackend
             public List<T> content;
         }
 
-        public class AssetData
+        public class FileResponse
         {
             public byte[] byteData;
             public string mimeType;

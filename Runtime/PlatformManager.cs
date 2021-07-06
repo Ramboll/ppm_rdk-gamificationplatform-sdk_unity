@@ -155,17 +155,17 @@ namespace GamificationBackend
             yield return api.GetNotices(callback);
         }
         
-        public IEnumerator CreateObservation(string title, string note, int obsType, Action<PlatformResponse<Observation>> callback)
+        public IEnumerator CreateObservation(string title, string note, int obsType, byte[] imageBytes, Action<PlatformResponse<Observation>> callback)
         {
             if (session == null)
             {
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.CreateObservation(session, title, note, obsType, callback);
+            yield return api.CreateObservation(session, title, note, obsType, imageBytes, callback);
         }
         
-        public IEnumerator GetFileContent(int assetId, Action<AssetData> callback)
+        public IEnumerator GetFileContent(int assetId, Action<FileResponse> callback)
         {
             if (session == null)
             {
