@@ -46,6 +46,53 @@ namespace GamificationBackend
             }
             
             #region API calls
+
+            public IEnumerator Authenticate(string phone, string passwd, Action<PlatformResponse<bool>> callback)
+            {
+                var requestPayload = new PayloadAuth
+                {
+                    game_token = _gameToken,
+                    password = passwd,
+                    phone = phone
+                };
+                var gameTokenPayload = new PayloadGameToken
+                {
+                    game_token = _gameToken
+                };
+                yield return PostJsonData<PayloadAuth, PayloadToken>(_authURL, requestPayload);
+                var tokenResponse = (PlatformResponse<PayloadToken>) responseCache;
+                if (tokenResponse.status == RequestStatus.ERROR)
+                {
+                    callback(new PlatformResponse<bool>
+                    {
+                        content = default,
+                        error = tokenResponse.error,
+                        status = RequestStatus.ERROR
+                    });
+                    yield break;
+                }
+                
+                _personalToken = tokenResponse.content.token;
+                yield return PostJsonData<PayloadGameToken, PayloadGameDetail>(_identifyURL, gameTokenPayload);
+                var gameDetail = (PlatformResponse<PayloadGameDetail>) responseCache;
+                if (gameDetail.status == RequestStatus.ERROR)
+                {
+                    callback(new PlatformResponse<bool>
+                    {
+                        content = default,
+                        error = gameDetail.error,
+                        status = RequestStatus.ERROR
+                    });
+                    yield break;
+                }
+                
+                callback(new PlatformResponse<bool>
+                {
+                    content = true,
+                    error = "",
+                    status = RequestStatus.SUCCESS
+                });
+            }
             
             public IEnumerator BuildSession(string phone, string passwd, Action<PlatformResponse<PlaySession>> callback)
             {

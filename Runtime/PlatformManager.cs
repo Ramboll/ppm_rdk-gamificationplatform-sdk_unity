@@ -90,6 +90,14 @@ namespace GamificationBackend
         {
             yield return api.RegisterPlayer(firstName, lastName, company, phone, password, callback);
         }
+        
+        public IEnumerator Authenticate(string phone, string password, Action<PlatformResponse<bool>> callback)
+        {
+            yield return api.Authenticate(phone, password, sessionResult =>
+            {
+                callback(sessionResult);
+            });
+        }
 
         /// <summary>
         /// Authenticates with the backend and internally stores reference to the session,
