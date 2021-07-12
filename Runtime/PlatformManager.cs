@@ -35,9 +35,9 @@ namespace GamificationBackend
         }
 
         private PlatformApi api;
-        private PlaySession session;
+        private AuthSession session;
 
-        public PlaySession Session => session;
+        public AuthSession Session => session;
 
         private void Awake()
         {
@@ -91,10 +91,11 @@ namespace GamificationBackend
             yield return api.RegisterPlayer(firstName, lastName, company, phone, password, callback);
         }
         
-        public IEnumerator Authenticate(string phone, string password, Action<PlatformResponse<bool>> callback)
+        public IEnumerator Authenticate(string phone, string password, Action<PlatformResponse<AuthSession>> callback)
         {
             yield return api.Authenticate(phone, password, sessionResult =>
             {
+                session = sessionResult.content;
                 callback(sessionResult);
             });
         }
@@ -130,7 +131,7 @@ namespace GamificationBackend
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.UpdateActivityStatus(session, CompletionStatusToInt(status), callback);
+            yield return api.UpdateActivityStatus((PlaySession)session, CompletionStatusToInt(status), callback);
         }
         
         public IEnumerator GetCompletionStatus(Action<PlatformResponse<PayloadActivityDetail>> callback)
@@ -140,7 +141,7 @@ namespace GamificationBackend
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.GetActivityStatus(session, callback);
+            yield return api.GetActivityStatus((PlaySession)session, callback);
         }
         
         public IEnumerator GetFilesList(Action<PlatformResponseMany<GameAsset>> callback)
@@ -150,7 +151,7 @@ namespace GamificationBackend
                 Debug.LogWarning("Play session has not been built. Ignoring request");
                 yield break;
             }
-            yield return api.GetFilesList(session, callback);
+            yield return api.GetFilesList((PlaySession)session, callback);
         }
         
         public IEnumerator GetNoticesList(Action<PlatformResponseMany<Notice>> callback)

@@ -14,30 +14,35 @@ namespace GamificationBackend
 
         IBaseSerializable Create(JSONNode data);
     }
-    
-    /// <summary>
-    /// An instance describing the authenticated session. Inpect the IsValid property to learn
-    /// whether it has authenticated correctly
-    /// </summary>
+
     [Serializable]
-    public class PlaySession : IBaseSerializable
+    public class AuthSession : IBaseSerializable
     {
         public string appToken;
         public string personalToken;
         public int campaignID;
         public int gameID;
-        public int status;
-        public int player;
         
         public bool check()
         {
-            return player != 0;
+            return gameID != 0;
         }
 
         public IBaseSerializable Create(JSONNode data)
         {
             throw new NotImplementedException();
         }
+    }
+    
+    /// <summary>
+    /// An instance describing the authenticated session. Inpect the IsValid property to learn
+    /// whether it has authenticated correctly
+    /// </summary>
+    [Serializable]
+    public class PlaySession : AuthSession
+    {
+        public int status;
+        public int player;
     }
 
     [Serializable]

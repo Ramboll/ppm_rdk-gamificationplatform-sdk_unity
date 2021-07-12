@@ -47,7 +47,7 @@ namespace GamificationBackend
             
             #region API calls
 
-            public IEnumerator Authenticate(string phone, string passwd, Action<PlatformResponse<bool>> callback)
+            public IEnumerator Authenticate(string phone, string passwd, Action<PlatformResponse<AuthSession>> callback)
             {
                 var requestPayload = new PayloadAuth
                 {
@@ -63,7 +63,7 @@ namespace GamificationBackend
                 var tokenResponse = (PlatformResponse<PayloadToken>) responseCache;
                 if (tokenResponse.status == RequestStatus.ERROR)
                 {
-                    callback(new PlatformResponse<bool>
+                    callback(new PlatformResponse<AuthSession>
                     {
                         content = default,
                         error = tokenResponse.error,
@@ -77,7 +77,7 @@ namespace GamificationBackend
                 var gameDetail = (PlatformResponse<PayloadGameDetail>) responseCache;
                 if (gameDetail.status == RequestStatus.ERROR)
                 {
-                    callback(new PlatformResponse<bool>
+                    callback(new PlatformResponse<AuthSession>
                     {
                         content = default,
                         error = gameDetail.error,
@@ -86,9 +86,22 @@ namespace GamificationBackend
                     yield break;
                 }
                 
-                callback(new PlatformResponse<bool>
+                callback(new PlatformResponse<AuthSession>
                 {
-                    content = true,
+                    content = default,
+                    error = "",
+                    status = RequestStatus.SUCCESS
+                });
+                AuthSession session = new AuthSession
+                {
+                    appToken = _gameToken,
+                    campaignID = gameDetail.content.campaign,
+                    gameID = gameDetail.content.id,
+                    personalToken = tokenResponse.content.token,
+                };
+                callback(new PlatformResponse<AuthSession>
+                {
+                    content = session,
                     error = "",
                     status = RequestStatus.SUCCESS
                 });
@@ -266,7 +279,7 @@ namespace GamificationBackend
                 callback((FileResponse)responseCache);
             }
 
-            public IEnumerator SetUdfFieldValue<T>(PlaySession session, string name, T value, int udfType,
+            public IEnumerator SetUdfFieldValue<T>(AuthSession session, string name, T value, int udfType,
                 Action<PlatformResponseMany<UdfValue>> callback)
             {
                 var url = _udfValueUrl
@@ -306,7 +319,7 @@ namespace GamificationBackend
                 callback(noticesResponse);
             }
 
-            public IEnumerator CreateObservation(PlaySession session, string title, string note, int obsType,
+            public IEnumerator CreateObservation(AuthSession session, string title, string note, int obsType,
                 byte[] imageBytes, Action<PlatformResponse<Observation>> callback)
             {
                 var url = _observationsUrl;
